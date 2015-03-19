@@ -36,7 +36,8 @@ public class PokerTable {
 			}
 		}
 		createFolderFile();
-		createOutput();
+		createOutput(OUTPUT_TXT);
+		createOutput(OUTPUT_INTERN_TXT);
 	}
 
 	/**
@@ -91,8 +92,8 @@ public class PokerTable {
 		}
 	}
 
-	private static void createOutput() throws IOException {
-		OutputStream outputStream = new FileOutputStream(OUTPUT_TXT);
+	private static void createOutput(String outputPath) throws IOException {
+		OutputStream outputStream = new FileOutputStream(outputPath);
 		Writer writer = new OutputStreamWriter(outputStream);
 		String newline = System.getProperty("line.separator");
 		for (String result : results) {
