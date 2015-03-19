@@ -8,12 +8,6 @@ import org.junit.Test;
 import de.pokergame.Hand;
 
 public class HandTest {
-
-	// 2H 3D 5S 9C KD 2C 3H 4S 8C AH
-	// 2H 4S 4C 2D 4H 2S 8S AS QS 3S
-	// 2H 3D 5S 9C KD 2C 3H 4S 8C KH
-	// 2H 3D 5S 9C KD 2D 3H 5C 9S KH
-
 	private Hand hand;
 
 	@Before
@@ -88,7 +82,7 @@ public class HandTest {
 	public void testIsTwoPairs() {
 		String cardString = "9C 9H 8D 8S 7H";
 		hand.drawFromDeck(cardString);
-		assertTrue(hand.isTwoPairs());// falsch
+		assertTrue(hand.isTwoPairs());
 	}
 
 	@Test
@@ -116,6 +110,6 @@ public class HandTest {
 	public void testIsNotPair() {
 		String cardString = "9C 9H 6D 6S 8H";
 		hand.drawFromDeck(cardString);
-		assertFalse(hand.isPair());// falsch
+		assertFalse(hand.isPair());
 	}
 }
