@@ -1,3 +1,4 @@
+package de.pokergame;
 public class Card implements Comparable<Card> {
 	private int numericValue;
 	private char suit;

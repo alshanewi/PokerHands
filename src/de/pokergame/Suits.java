@@ -1,3 +1,4 @@
+package de.pokergame;
 public enum Suits {
 	  CLUBS('C'),DIAMONDS('D'), HEARTS('H'),SPADES('S');
 	

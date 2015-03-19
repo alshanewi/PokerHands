@@ -1,3 +1,5 @@
+package de.pokergame;
+
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 import static java.lang.Math.pow;
@@ -7,21 +9,25 @@ import java.util.Arrays;
 public class Hand {
 	public final static int MAX_CARD = 5;
 
-	public static final int PAIR = 300000;
-	public static final int TWO_PAIRS = 600000;
-	public static final int THREE_OF_A_KIND = 1200000;
-	public static final int STRAIGHT = 2400000;
-	public static final int FLUSH = 4800000;
-	public static final int FULL_HOUSE = 9600000;
-	public static final int FOUR_OF_KIND = 18200000;
-	public static final int STRAIGHT_FLUSH = 36400000;
+	private final int PAIR = 300000;
+	private final int TWO_PAIRS = 600000;
+	private final int THREE_OF_A_KIND = 1200000;
+	private final int STRAIGHT = 2400000;
+	private final int FLUSH = 4800000;
+	private final int FULL_HOUSE = 9600000;
+	private final int FOUR_OF_KIND = 18200000;
+	private final int STRAIGHT_FLUSH = 36400000;
 
-	Card[] cards;
+	private Card[] cards;
 	int rank = Integer.MIN_VALUE;
 
-	public Hand(String handString) {
+	public Hand() {
 		cards = new Card[MAX_CARD];
-		String[] cardsFromDeck = handString.split(" ");
+	}
+
+	public void drawFromDeck(String cardString) {
+		cards = new Card[MAX_CARD];
+		String[] cardsFromDeck = cardString.split(" ");
 		for (int i = 0; i < MAX_CARD; i++) {
 			cards[i] = new Card(cardsFromDeck[i]);
 		}
@@ -194,7 +200,7 @@ public class Hand {
 	}
 
 	/**
-	 * 2 of the 5 cards in the hand have the same value.
+	 * 2 of the 5 cards in the hand have the same value and only these 2 cards.
 	 */
 	public boolean isPair() {
 		int card1 = cards[0].getNumericValue();
@@ -203,9 +209,11 @@ public class Hand {
 		int card4 = cards[3].getNumericValue();
 		int card5 = cards[4].getNumericValue();
 
-		return ((card1 == card2 && card2 != card3)
-				|| (card2 == card3 && card2 != card1 && card3 != card4)
-				|| (card3 == card4 && card3 != card2 && card4 != card5) || (card4 == card5 && card4 != card3));
+		return ((card1 == card2 && card2 != card3 && card4 != card5)
+				|| (card2 == card3 && card2 != card1 && card3 != card4
+						&& card2 != card5 && card4 != card5)
+				|| (card3 == card4 && card3 != card2 && card4 != card5) || (card4 == card5
+				&& card4 != card3 && card1 != card2));
 	}
 
 	private int rankPair() {
@@ -217,16 +225,17 @@ public class Hand {
 
 		int rank = PAIR;
 
-		if (card1 == card2 && card2 != card3) {
+		if (card1 == card2 && card2 != card3 && card4 != card5) {
 			rank += pow(card1, 4) + pow(card5, 3) + pow(card4, 2)
 					+ pow(card3, 1);
-		} else if (card2 == card3 && card2 != card1 && card3 != card4) {
+		} else if (card2 == card3 && card2 != card1 && card3 != card4
+				&& card2 != card5 && card4 != card5) {
 			rank += pow(card2, 4) + pow(card5, 3) + pow(card4, 2)
 					+ pow(card1, 1);
 		} else if (card3 == card4 && card3 != card2 && card4 != card5) {
 			rank += pow(card3, 4) + pow(card5, 3) + pow(card2, 2)
 					+ pow(card1, 1);
-		} else if (card4 == card5 && card4 != card3) {
+		} else if (card4 == card5 && card4 != card3 && card1 != card2) {
 			rank += pow(card4, 4) + pow(card3, 3) + pow(card2, 2)
 					+ pow(card1, 1);
 		}

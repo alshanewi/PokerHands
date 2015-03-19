@@ -1,3 +1,5 @@
+package de.pokergame;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -22,14 +24,14 @@ public class PokerTable {
 				f.getParentFile().mkdirs();
 				f.createNewFile();
 			} catch (IOException e) {
-			} 
+			}
 			BufferedReader br = generateFileReader();
 			String line;
 			try {
 				wr = new BufferedWriter(new FileWriter(OUTPUT_TXT));
 				wrIntern = new BufferedWriter(new FileWriter(OUTPUT_INTERN_TXT));
 				while ((line = br.readLine()) != null) {
-					String result = readFile(line);
+					String result = pokerHands(line);
 					wr.write(result);
 					wrIntern.write(result);
 					String newline = System.getProperty("line.separator");
@@ -54,7 +56,7 @@ public class PokerTable {
 		return br;
 	}
 
-	private static String readFile(String cardsInput) {
+	public static String pokerHands(String cardsInput) {
 		cardsInput = cardsInput.trim();
 		String[] cards = cardsInput.split(" ");
 		StringBuilder firstHandString = new StringBuilder(), secondHandString = new StringBuilder();
@@ -70,18 +72,18 @@ public class PokerTable {
 				secondHandString.append(" ");
 		}
 
-		Hand firstHand = new Hand(firstHandString.toString());
-		Hand secondHand = new Hand(secondHandString.toString());
+		Hand firstHand = new Hand();
+		firstHand.drawFromDeck(firstHandString.toString());
+		Hand secondHand = new Hand();
+		secondHand.drawFromDeck(secondHandString.toString());
 
 		int firstRank = firstHand.getRank();
 		int secondRank = secondHand.getRank();
 
 		if (firstRank > secondRank) {
-			System.out.println(FIRST_HAND_WINS);
-			 return FIRST_HAND_WINS;
+			return FIRST_HAND_WINS;
 		} else if (secondRank > firstRank) {
-			System.out.println(SECOND_HAND_WINS);
-			 return SECOND_HAND_WINS;
+			return SECOND_HAND_WINS;
 		} else {
 			System.out.println(TIE);
 			return TIE;
