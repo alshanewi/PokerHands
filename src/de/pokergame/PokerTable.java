@@ -4,9 +4,14 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.util.ArrayList;
 
 public class PokerTable {
 	private static final String OUTPUT_TXT = "C:\\pokerGame\\output.txt";
@@ -14,48 +19,34 @@ public class PokerTable {
 	public static final String FIRST_HAND_WINS = "First hand wins";
 	public static final String SECOND_HAND_WINS = "Second hand wins";
 	public static final String TIE = "Tie";
+	private static ArrayList<String> results;
 
 	public static void main(String[] args) throws IOException {
 		if (checkIfFileExists()) {
-			BufferedWriter wr = null;
-			BufferedWriter wrIntern = null;
-			try {
-				File f = new File(OUTPUT_TXT);
-				f.getParentFile().mkdirs();
-				f.createNewFile();
-			} catch (IOException e) {
-			}
+			results = new ArrayList<String>();
 			BufferedReader br = generateFileReader();
 			String line;
 			try {
-				wr = new BufferedWriter(new FileWriter(OUTPUT_TXT));
-				wrIntern = new BufferedWriter(new FileWriter(OUTPUT_INTERN_TXT));
 				while ((line = br.readLine()) != null) {
 					String result = pokerHands(line);
-					wr.write(result);
-					wrIntern.write(result);
-					String newline = System.getProperty("line.separator");
-					wr.write(newline);
-					wrIntern.write(newline);
+					results.add(result);
 				}
 				br.close();
-				wr.close();
-				wrIntern.close();
 			} catch (IOException e1) {
-				e1.printStackTrace();
 			}
-		} else {
-			System.out.println("File doesnt exists.");
 		}
+		createFolderFile();
+		createOutput();
 	}
 
-	private static BufferedReader generateFileReader()
-			throws FileNotFoundException {
-		FileReader fileReader = new FileReader("input.txt");
-		BufferedReader br = new BufferedReader(fileReader);
-		return br;
-	}
-
+	/**
+	 * Comapre pairs of poker hands and indicate which, if either, has a higher
+	 * rank.
+	 * 
+	 * @param cardsInput
+	 *            given cards from deck e.g. 5H 5C 6S 7S KD 2C 3S 8S 8D TD
+	 * @return
+	 */
 	public static String pokerHands(String cardsInput) {
 		cardsInput = cardsInput.trim();
 		String[] cards = cardsInput.split(" ");
@@ -85,16 +76,42 @@ public class PokerTable {
 		} else if (secondRank > firstRank) {
 			return SECOND_HAND_WINS;
 		} else {
-			System.out.println(TIE);
 			return TIE;
 		}
 	}
 
+	private static void createFolderFile() {
+		File file = new File(OUTPUT_TXT);
+		if (!file.exists()) {
+			try {
+				file.getParentFile().mkdirs();
+				file.createNewFile();
+			} catch (IOException e) {
+			}
+		}
+	}
+
+	private static void createOutput() throws IOException {
+		OutputStream outputStream = new FileOutputStream(OUTPUT_TXT);
+		Writer writer = new OutputStreamWriter(outputStream);
+		String newline = System.getProperty("line.separator");
+		for (String result : results) {
+			writer.write(result);
+			writer.write(newline);
+		}
+		writer.close();
+	}
+
+	private static BufferedReader generateFileReader()
+			throws FileNotFoundException {
+		FileReader fileReader = new FileReader("input.txt");
+		BufferedReader br = new BufferedReader(fileReader);
+		return br;
+	}
+
 	private static boolean checkIfFileExists() {
 		File file = new File("input.txt");
-
 		boolean fileExists = file.exists();
-		System.out.println(fileExists);
 		return fileExists;
 	}
 
